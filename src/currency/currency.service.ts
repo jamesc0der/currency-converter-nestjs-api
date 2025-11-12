@@ -1,11 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
 export class CurrencyService {
-  // private readonly apiKey = '4E0VK7BnkdeUuh1vegAt808v2IUjzUR6lxcvBMT2';
-  private readonly apiKey = 'fca_live_asDod6B5jHbZ5HKOEr8NiWhEfksZwtwRbwDBmRLt';
-  private readonly baseUrl = 'https://api.freecurrencyapi.com/v1';
+  private readonly apiKey: string;
+  private readonly baseUrl: string;
+
+  constructor(private configService: ConfigService) {
+    this.apiKey = this.configService.get<string>('CURRENCY_API_KEY')??"";
+    this.baseUrl = this.configService.get<string>('CURRENCY_API_BASE_URL')??"";
+  }
 
   private async makeRequest(endpoint: string, params: any = {}) {
     try {
